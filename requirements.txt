@@ -11,3 +11,4 @@ flask_sqlalchemy
 flask_migrate
 flask_babelex
 psycopg2
+pymysql

@@ -1,7 +1,16 @@
 # image: weeklyreport:0.2
 FROM centos:7
 MAINTAINER CodingCrush
-ENV LANG en_US.UTF-8
+ENV LANG=en_US.UTF-8 \
+    SECRET_KEY="nobody knows the password" \
+    MAIL_SERVER="smtp.163.com" \
+    MAIL_PORT=25 \
+    MAIL_USE_SSL=False \
+    MAIL_USERNAME="<EMAIL@ADDRESS>" \
+    MAIL_PASSWORD="<EMAIL_PASSWORD>" \
+    WR_MAIL_SUBJECT_PREFIX="[WeeklyReport]" \
+    WR_MAIL_SENDER="WeeklyReport <weeklyreport@163.com>" \
+    SQLALCHEMY_DATABASE_URI="mysql+pymysql://user:password@mysql:3306/weekly_report"
 # TimeZone: Asia/Shanghai
 RUN ln -s -f /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     curl -fsSL https://setup.ius.io/ | sh && \
@@ -11,7 +20,7 @@ RUN ln -s -f /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo -e "[global]\nindex-url=http://pypi.douban.com/simple/\ntrusted-host=pypi.douban.com">~/.pip/pip.conf && \
     yum clean all
 
-RUN yum install -y supervisor
+#RUN yum install -y supervisor
 
 RUN mkdir -p /deploy
 #VOLUME /deploy
@@ -20,7 +29,7 @@ COPY requirements.txt /deploy/requirements.txt
 RUN pip3.6 install -r requirements.txt --timeout=120
 
 # Setup supervisord
-RUN mkdir -p /var/log/supervisor
+#RUN mkdir -p /var/log/supervisor
 #COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 #COPY gunicorn.conf /etc/supervisor/conf.d/gunicorn.conf
 
@@ -52,6 +61,8 @@ COPY entrypoint.sh /scripts/entrypoint.sh
 #RUN chown -R /scripts
 RUN chmod +x /scripts/entrypoint.sh
 
-CMD ["/scripts/entrypoint.sh"]
+#CMD ["/scripts/entrypoint.sh"]
 #CMD ["/usr/bin/supervisord"]
 #CMD ["/bin/bash"]
+
+CMD gunicorn wsgi:app --bind 0.0.0.0:8080 -w 2 --log-file logs/awsgi.log --log-level=INFO

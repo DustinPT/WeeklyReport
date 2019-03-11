@@ -37,9 +37,9 @@ class Role(db.Model):
             'ADMINISTRATOR': 0xff,
         }
         for r in roles:
-            role = Role.query.filter_by(name=unicode(r)).first()
+            role = Role.query.filter_by(name=r).first()
             if role is None:
-                role = Role(name=unicode(r),
+                role = Role(name=r,
                             permissions=roles[r])
             db.session.add(role)
         db.session.commit()
@@ -60,17 +60,17 @@ class Department(db.Model):
     @staticmethod
     def insert_departments():
         for dept in current_app.config['DEPARTMENTS']:
-            if not Department.query.filter_by(name=unicode(dept)).first():
-			        dept = Department(name=unicode(dept))
-			        db.session.add(dept)
+            if not Department.query.filter_by(name=dept).first():
+                dept = Department(name=dept)
+                db.session.add(dept)
         db.session.commit()
         
     @staticmethod
     def delete_departments():
         dept="1"
-        dept= Department.query.filter_by(name=unicode(dept)).first()
+        dept= Department.query.filter_by(name=dept).first()
         if dept:
-			     db.session.delete(dept)
+            db.session.delete(dept)
         db.session.commit()        
 
     def __str__(self):
@@ -199,7 +199,7 @@ class Report(db.Model):
     def get_last_report(author_id, week_count):
         report = Report.query.filter_by(author_id=author_id,week_count=week_count).first()
         if report:
-			      return report
+            return report
 
     def __str__(self):
         return 'Posted by {} at {}'.format(

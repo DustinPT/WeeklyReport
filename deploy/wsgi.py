@@ -4,9 +4,10 @@ from app.models import Role, Department, Report
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager, Shell
 import os
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+# https://stackoverflow.com/questions/3828723/why-should-we-not-use-sys-setdefaultencodingutf-8-in-a-py-script
+#import sys
+#reload(sys)
+#sys.setdefaultencoding('utf8')
 
 
 config_file = os.path.join(
